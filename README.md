@@ -1,0 +1,1 @@
+A simple script for generating paint can images for Team Fortress 2 using bash + imagemagick. Includes both single colors and team colors.

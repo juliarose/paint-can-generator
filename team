@@ -1,11 +1,8 @@
 #!/bin/bash
 
-
-DEFINDEX=( "TEAM" )
-
 # the hex color of the paint can for red team
 HEX_RED=$1
-# for blue team
+# for blu team
 HEX_BLU=$2
 # filename to write as
 OUTPUT_FILENAME=$3

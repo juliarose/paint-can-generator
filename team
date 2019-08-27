@@ -1,0 +1,62 @@
+#!/bin/bash
+
+
+DEFINDEX=( "TEAM" )
+
+# the hex color of the paint can for red team
+HEX_RED=$1
+# for blue team
+HEX_BLU=$2
+# filename to write as
+OUTPUT_FILENAME=$3
+# OPTIONAL - size of image
+SIZE=$4
+
+# the path of this script
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# our templates
+TEMPLATE_RED_COLOR_FILENAME="${SCRIPT_DIR}/templates/redcolor.png"
+TEMPLATE_BLU_COLOR_FILENAME="${SCRIPT_DIR}/templates/blucolor.png"
+TEMPLATE_CAN_FILENAME="${SCRIPT_DIR}/templates/team_paintcan.png"
+
+# temp filenames
+TEMP_FILENAME_RED="${SCRIPT_DIR}/TEAM_${HEX_RED}.png"
+TEMP_FILENAME_BLU="${SCRIPT_DIR}/TEAM_${HEX_BLU}.png"
+TEMP_FILENAME="${SCRIPT_DIR}/${HEX_RED}_${HEX_BLU}.png"
+
+if [ -z $HEX_RED ];
+then
+    echo "No hex number provided for Red"
+elif [ -z $HEX_BLU ];
+then
+    echo "No hex number provided for Blu"
+elif [ -z $OUTPUT_FILENAME ];
+then
+    echo "No output filename provided"
+else
+    convert -size 512x512 xc:"#${HEX_RED}" $TEMP_FILENAME_RED
+    convert -size 512x512 xc:"#${HEX_BLU}" $TEMP_FILENAME_BLU
+    
+    # compose red
+    composite -compose atop  $TEMP_FILENAME_RED $TEMPLATE_RED_COLOR_FILENAME $TEMP_FILENAME_RED
+    composite -compose multiply  $TEMP_FILENAME_RED $TEMPLATE_BLU_COLOR_FILENAME $TEMP_FILENAME_RED
+    
+    # compose blu
+    composite -compose atop  $TEMP_FILENAME_BLU $TEMPLATE_BLU_COLOR_FILENAME $TEMP_FILENAME_BLU
+    composite -compose multiply  $TEMP_FILENAME_BLU $TEMPLATE_BLU_COLOR_FILENAME $TEMP_FILENAME_BLU
+    
+    # adds the paint can, with the red color on top
+    composite -compose atop $TEMP_FILENAME_RED $TEMPLATE_CAN_FILENAME $TEMP_FILENAME
+    # add the blue color
+    composite -compose atop $TEMP_FILENAME_BLU $TEMP_FILENAME $OUTPUT_FILENAME
+    
+    # check if the size was provided and it is less than 512
+    if [ ! -z $SIZE ] && [ $SIZE -lt 512 ];
+    then
+        # resize it as the final step
+        convert $OUTPUT_FILENAME -resize "${SIZE}x${SIZE}" $OUTPUT_FILENAME
+    fi
+    
+    # delete the temp files
+    rm $TEMP_FILENAME_RED $TEMP_FILENAME_BLU $TEMP_FILENAME
+fi

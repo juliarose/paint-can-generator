@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# the hex color of the paint can
+HEX=$1
+# filename to write as
+OUTPUT_FILENAME=$2
+# OPTIONAL - size of image
+SIZE=$3
+
+# the path of this script
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# our templates
+TEMPLATE_COLOR_FILENAME="${SCRIPT_DIR}/templates/paintcolor.png"
+TEMPLATE_CAN_FILENAME="${SCRIPT_DIR}/templates/paintcan.png"
+# temp filename for image
+TEMP_FILENAME="${SCRIPT_DIR}/${HEX}.png"
+
+if [ -z $HEX ];
+then
+    echo "No hex number provided"
+elif [ -z $OUTPUT_FILENAME ];
+then
+    echo "No output filename provided"
+else
+    # compose the hex color ontop a new file
+    convert -size 512x512 xc:"#${HEX}" $TEMP_FILENAME
+    # clips color to paint color image
+    composite -compose atop  $TEMP_FILENAME $TEMPLATE_COLOR_FILENAME $TEMP_FILENAME
+    # uses the shading from the color image
+    composite -compose multiply $TEMP_FILENAME $TEMPLATE_COLOR_FILENAME $TEMP_FILENAME
+    # adds the paint can, with the color on top, and outputs to the file
+    composite -compose atop $TEMP_FILENAME $TEMPLATE_CAN_FILENAME $OUTPUT_FILENAME
+    
+    # check if the size was provided and it is less than 512
+    if [ ! -z $SIZE ] && [ $SIZE -lt 512 ];
+    then
+        # resize it as the final step
+        convert $OUTPUT_FILENAME -resize "${SIZE}x${SIZE}" $OUTPUT_FILENAME
+    fi
+    
+    # delete the temp file
+    rm $TEMP_FILENAME
+fi

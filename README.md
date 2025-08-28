@@ -4,14 +4,13 @@ Generates Team Fortress 2 paint can images.
 - ImageMagick
 
 ## Usage
-Single colors `<paint> <output_filename> <output_dimension>`
 
+Single colors
 ```bash
 single FF0000 paint.png 256
 ```
 
-Team colors `<paint> <output_filename> <output_dimension>`
-
+Team colors
 ```bash
 team FF0000 0000FF paint.png 256
 ```

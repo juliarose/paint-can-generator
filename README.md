@@ -1,21 +1,20 @@
-A simple set of scripts for generating Team Fortress 2 paint can images using bash + imagemagick. Includes both single colors and team colors.
+Generates Team Fortress 2 paint can images.
 
-## Scripts
-1. single - Generates a single color paint.
-2. team - Generates a team color paint.
+## Requirements
+- ImageMagick
 
 ## Usage
-For using the single colored script:
+Single colors `<paint> <output_filename> <output_dimension>`
 
-```bash single FF000 paint.png 256```
+```bash
+single FF0000 paint.png 256
+```
 
-The arguments are for the color, the output filename, and the size (optional).
+Team colors `<paint> <output_filename> <output_dimension>`
 
-For using the team colored script:
-
-```bash team FF0000 0000FF paint.png 256```
-
-The arguments are for red team, blu team, the output filename, and the size (optional).
+```bash
+team FF0000 0000FF paint.png 256
+```
 
 ## License
 MIT
